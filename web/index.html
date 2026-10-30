@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7f8f4">
+  <meta name="description" content="Your books, on your Kobo. A private, local Wi-Fi transfer app.">
+  <meta name="pageport-token" content="__ADMIN_TOKEN__">
+  <title>Pageport — Your wireless bookshelf</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/style.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <svg class="icon-defs" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>
+    <symbol id="i-book" viewBox="0 0 24 24"><path d="M12 6c-3-2-6-2-9-1v15c3-1 6-1 9 1 3-2 6-2 9-1V5c-3-1-6-1-9 1Zm0 0v15"/></symbol>
+    <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></symbol>
+    <symbol id="i-wifi" viewBox="0 0 24 24"><path d="M2 8a16 16 0 0 1 20 0M5 12a11 11 0 0 1 14 0m-10 4a5 5 0 0 1 6 0"/><circle cx="12" cy="20" r=".7"/></symbol>
+    <symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.7 2.2c-1 .6-1.2 1-1.2 2.3m0 3h.01"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-5-5 5 5-5 5"/></symbol>
+    <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 16V3M7 8l5-5 5 5M4 15v5a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-5"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="13" rx="2"/><path d="M15 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h3"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></symbol>
+    <symbol id="i-file" viewBox="0 0 24 24"><path d="M13 3H5a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V9Zm0 0v6h7M8 13h8m-8 4h5"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7m4-7v7"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v13m-5-5 5 5 5-5M4 17v4h16v-4"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 2 3 6v6c0 5 9 10 9 10s9-5 9-10V6Z"/><path d="m8 11 3 3 5-6"/></symbol>
+    <symbol id="i-external" viewBox="0 0 24 24"><path d="M14 3h7v7m0-7L10 14M10 3H3v18h18v-7"/></symbol>
+    <symbol id="i-pause" viewBox="0 0 24 24"><path d="M9 5v14M15 5v14"/></symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 7a9 9 0 1 0 1 8M20 3v5h-5"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M6 18 18 6"/></symbol>
+  </defs></svg>
+
+  <aside class="sidebar">
+    <a class="brand" href="#library" aria-label="Pageport library"><span class="brand-mark"><svg class="icon"><use href="#i-book"/></svg></span>pageport<span class="brand-dot">.</span></a>
+    <div class="sidebar-label">YOUR READING SPACE</div>
+    <nav aria-label="Main navigation">
+      <a class="nav-link active" href="#library" data-view="library"><svg class="icon"><use href="#i-grid"/></svg>Your library<span id="nav-count" class="nav-count">0</span></a>
+      <a class="nav-link" href="#connect" data-view="connect"><svg class="icon"><use href="#i-wifi"/></svg>Connect your Kobo</a>
+      <a class="nav-link" href="#guide" data-view="guide"><svg class="icon"><use href="#i-help"/></svg>How it works</a>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="privacy-card"><svg class="icon"><use href="#i-shield"/></svg><strong>Local. Private. Yours.</strong><p>Your books stay on this computer and travel over your Wi-Fi.</p></div>
+      <div class="sidebar-foot"><span>MADE FOR YOUR NEXT CHAPTER</span><span id="version">v1.0</span></div>
+    </div>
+  </aside>
+
+  <div class="workspace">
+    <header class="topbar"><span class="breadcrumb">Your space <span>/</span> <b id="breadcrumb-current">Library</b></span><div class="server-status" id="server-status"><span class="status-dot"></span><span id="server-status-text">Starting up…</span></div></header>
+    <main>
+      <div id="connection-error" class="alert error" role="alert" hidden>Pageport isn’t responding. Keep the app running, then <button type="button" id="retry-connection">try again</button>.</div>
+      <div id="paused-banner" class="alert" hidden>Sharing is paused. Your library is saved; resume sharing when you’re ready to download on your Kobo.</div>
+
+      <section class="view" id="view-library" aria-labelledby="library-heading">
+        <div class="page-heading"><div><div class="eyebrow">LESS CABLES. MORE CHAPTERS.</div><h1 id="library-heading">Your library<span>.</span></h1><p>A few good books, one small hop to your Kobo.</p></div><button type="button" class="button primary add-files"><svg class="icon"><use href="#i-plus"/></svg>Add books</button></div>
+
+        <section class="connection-card" aria-label="Connect your Kobo">
+          <div class="connection-intro"><div class="small-label"><svg class="icon"><use href="#i-wifi"/></svg>YOUR WIRELESS BOOK BRIDGE</div><h2>A new chapter is<br>just a tap away.</h2><p>On the same Wi-Fi? Open this address in your Kobo’s web browser.</p><a class="text-link" href="#connect">Show me how <svg class="icon"><use href="#i-arrow"/></svg></a></div>
+          <div class="connection-address"><div class="address-label">ENTER ON YOUR KOBO <span class="reader-status"><span class="status-dot"></span><span class="reader-status-text">Waiting for a reader</span></span></div><div class="address-box"><span class="reader-address">Finding your address…</span><button type="button" class="icon-button copy-address" aria-label="Copy reader address" title="Copy address"><svg class="icon"><use href="#i-copy"/></svg></button></div><div class="code-row"><span>Then enter this code</span><span class="session-code" aria-label="Session code">— — — — — —</span></div><div class="connection-hint">Keep Pageport open while your books make the trip.</div></div>
+        </section>
+
+        <section class="dropzone" id="dropzone" aria-label="Upload books"><div class="upload-mark"><svg class="icon"><use href="#i-upload"/></svg></div><div class="drop-copy"><h2>Drop your next read here</h2><p>EPUB, PDF, KEPUB, comics &amp; more <span>·</span> Up to 512 MiB per file</p></div><button type="button" class="button secondary add-files">Browse files<svg class="icon"><use href="#i-plus"/></svg></button></section>
+        <input type="file" id="file-input" multiple hidden accept=".epub,.kepub,.pdf,.cbz,.cbr,.txt,.rtf,.html,.htm,.mobi,.jpg,.jpeg,.png,.gif,.bmp,.tif,.tiff">
+        <section class="upload-panel" id="upload-panel" aria-label="Upload progress" hidden><div class="upload-panel-heading"><strong id="upload-title">Adding books to your library…</strong><button type="button" class="icon-button" id="dismiss-uploads" aria-label="Dismiss upload results" hidden><svg class="icon"><use href="#i-close"/></svg></button></div><div id="upload-list" aria-live="polite"></div></section>
+
+        <section class="library-section" aria-label="Books"><div class="library-title"><h2>On your bookshelf <span id="library-count">0</span></h2><span id="library-size">Ready for a good read</span></div><div class="library-tools"><div class="filters" role="group" aria-label="Filter by format"><button class="filter active" data-filter="all" aria-pressed="true">All books</button><button class="filter" data-filter="epub" aria-pressed="false">EPUB</button><button class="filter" data-filter="pdf" aria-pressed="false">PDF</button><button class="filter" data-filter="other" aria-pressed="false">Other</button></div><div class="search-sort"><label class="search-box"><svg class="icon"><use href="#i-search"/></svg><input type="search" id="search" placeholder="Find a book…" aria-label="Find a book"></label><label class="sr-only" for="sort">Sort books</label><select id="sort"><option value="newest">Newest first</option><option value="name">Name A–Z</option><option value="size">Largest first</option></select></div></div>
+          <div id="empty-library" class="empty-state"><svg class="books-illustration" viewBox="0 0 180 106" fill="none" aria-hidden="true"><ellipse cx="91" cy="94" rx="66" ry="5" fill="#e9ece4"/><rect x="33" y="72" width="109" height="18" rx="3" fill="#d9e3d4" stroke="#9aac91"/><path d="M44 77h93m-93 4h93m-93 4h93" stroke="#f7f8f4"/><path d="M35 72v18" stroke="#8eaa84" stroke-width="5"/><g transform="rotate(-7 94 62)"><rect x="46" y="51" width="104" height="18" rx="3" fill="#f1dfc8" stroke="#cfb18b"/><path d="M55 56h88m-88 4h88m-88 4h88" stroke="#fffaf3"/><path d="M48 52v16" stroke="#bf9970" stroke-width="4"/></g><rect x="60" y="13" width="20" height="39" rx="2" fill="#bdccbb" stroke="#8caa8a" transform="rotate(-14 60 13)"/><path d="m69 23 8-2m-6 6 8-2m-1 18 8-2" stroke="#eff3ec"/><path d="M128 21v10m-5-5h10M30 42v8m-4-4h8" stroke="#a9b89c" stroke-width="1.5" stroke-linecap="round"/><circle cx="146" cy="43" r="2" fill="#c69467"/></svg><h3>A little room for your next adventure.</h3><p>Add your first book and it’ll be ready to download on your Kobo.</p><button type="button" class="text-link add-files">Choose your first book<svg class="icon"><use href="#i-arrow"/></svg></button></div>
+          <div id="no-results" class="empty-state small" hidden><svg class="icon"><use href="#i-search"/></svg><h3>No books found</h3><p>Try a different title or format.</p><button type="button" class="text-link" id="clear-filters">Clear filters</button></div>
+          <div class="book-table-wrap" id="book-table-wrap" hidden><table class="book-table"><thead><tr><th scope="col">BOOK</th><th scope="col">FORMAT</th><th scope="col">SIZE</th><th scope="col">ACTIVITY</th><th scope="col"><span class="sr-only">Actions</span></th></tr></thead><tbody id="book-list"></tbody></table></div>
+        </section>
+        <div class="library-footnote"><svg class="icon"><use href="#i-book"/></svg>Ready here. Downloaded on your Kobo.<span>Open the reader page to pick your next book.</span></div>
+      </section>
+
+      <section class="view" id="view-connect" aria-labelledby="connect-heading" hidden>
+        <div class="page-heading"><div><div class="eyebrow">A SMALL BRIDGE. A BIG BOOKSHELF.</div><h1 id="connect-heading">Meet your Kobo<span>.</span></h1><p>One Wi-Fi network. Three simple steps.</p></div><button type="button" class="button secondary sharing-toggle"><svg class="icon"><use href="#i-pause"/></svg><span>Pause sharing</span></button></div>
+        <div class="connect-layout"><section class="panel steps-panel"><h2>Let’s get you connected</h2><ol class="steps"><li><span class="step-number">01</span><div><h3>Join the same Wi-Fi</h3><p>Connect your computer and Kobo to the same home network. Keep this app running.</p></div></li><li><span class="step-number">02</span><div><h3>Open your Kobo’s browser</h3><p>Find <strong>Beta Features</strong> under <strong>More</strong> or <strong>Settings</strong>, then open <strong>Web Browser</strong>. The menu location varies with firmware.</p></div></li><li><span class="step-number">03</span><div><h3>Visit, enter, read</h3><p>Type the address on the right, enter your session code, then tap a book to download it. Confirm the download on your Kobo.</p></div></li></ol><div class="tip"><svg class="icon"><use href="#i-book"/></svg><p>Bookmark the address on your Kobo. Next time, you’ll just need the new session code.</p></div></section>
+        <section class="panel connection-detail"><div class="small-label"><svg class="icon"><use href="#i-wifi"/></svg>YOUR CONNECTION</div><label for="network-select" class="field-label">Computer’s network address</label><select id="network-select" aria-describedby="network-help"></select><p class="field-hint" id="network-help">If you have several addresses, choose the one on your Wi-Fi network.</p><div class="address-box"><span class="reader-address">Finding your address…</span><button type="button" class="icon-button copy-address" aria-label="Copy reader address"><svg class="icon"><use href="#i-copy"/></svg></button></div><div class="field-label code-label">Session code</div><div class="session-code large">— — — — — —</div><div class="connection-detail-actions"><button type="button" class="text-link" id="reset-code"><svg class="icon"><use href="#i-refresh"/></svg>New code</button><a class="text-link reader-preview" href="#" target="_blank" rel="noopener">Preview reader page<svg class="icon"><use href="#i-external"/></svg></a></div><div class="reader-status detail-status"><span class="status-dot"></span><span class="reader-status-text">Waiting for a reader</span></div></section></div>
+        <section class="panel troubleshoot"><h2>Can’t find each other?</h2><div class="troubleshoot-grid"><div><h3>Check the network</h3><p>Guest Wi-Fi can isolate devices. Use your main network, and check whether a VPN is blocking local connections.</p></div><div><h3>Let Pageport through</h3><p>If Windows Firewall asks, allow Pageport on your private network. No router port forwarding is needed.</p></div><div><h3>Use the full address</h3><p>Start with <strong>http://</strong> and include the port number. This local connection doesn’t use HTTPS.</p></div></div></section>
+      </section>
+
+      <section class="view" id="view-guide" aria-labelledby="guide-heading" hidden>
+        <div class="page-heading"><div><div class="eyebrow">A CALMER WAY TO SEND BOOKS.</div><h1 id="guide-heading">A few helpful pages<span>.</span></h1><p>Everything you need for the short trip from computer to Kobo.</p></div></div>
+        <div class="guide-summary"><div><span class="guide-number">1</span><h2>Add your books</h2><p>Drop files into your library. Pageport keeps its own copy, so your originals stay where they are.</p></div><div><span class="guide-number">2</span><h2>Open the bridge</h2><p>Visit the local address in your Kobo’s browser and enter the session code.</p></div><div><span class="guide-number">3</span><h2>Pick your next read</h2><p>Tap a download link on your Kobo, accept the download, then look in My Books.</p></div></div>
+        <section class="panel faq"><h2>Good to know</h2><details open><summary>Which files can I send?</summary><p>EPUB, KEPUB and PDF are the best place to start. You can also add CBZ, CBR, MOBI, TXT, RTF, HTML and common image formats. What your Kobo’s browser can download and import depends on its model and firmware, and can be narrower than the formats it reads over USB.</p><p>Files are sent as they are, without conversion. A .kepub file is named .kepub.epub for the Kobo browser. The limit is 512 MiB per file.</p></details><details><summary>Does it push books to my Kobo automatically?</summary><p>You start each download in your Kobo’s browser. No account, cable, or extra software on the Kobo is needed. Pageport can report that a file was served, but cannot confirm that the Kobo imported it into My Books.</p></details><details><summary>Where are my books stored?</summary><p>In the pageport-data folder beside the app, unless you selected a different folder when starting it. Your library is kept when you close Pageport. Removing a book here deletes only Pageport’s copy; it doesn’t remove your original or a copy already on your Kobo.</p></details><details><summary>Who can access my library?</summary><p>The management screen is available only on this computer. Devices on your network need the session code to view and download your books. A new code is created each time you launch Pageport; you can also change it from Connect your Kobo.</p><p>Use a trusted private network. Downloads travel over local HTTP so the Kobo’s browser can open them. Pause sharing to stop new downloads, or close the app to stop the server.</p></details><details><summary>What about books with DRM or .acsm files?</summary><p>Pageport doesn’t remove DRM. An ACSM file is a license, not the book itself; use Adobe Digital Editions for books protected with Adobe DRM.</p></details><details><summary>Can I use it without internet?</summary><p>Pageport needs only a local network. The app includes all its assets and doesn’t send your books to a cloud service. Your Kobo may still need its usual Wi-Fi connection check to succeed.</p></details></section>
+        <p class="source-note">Independent software, made for your reading routine. Not affiliated with Rakuten Kobo. <a href="https://help.kobo.com/hc/en-us/articles/360017763713-File-formats-your-Kobo-eReader-and-Kobo-Books-app-support" target="_blank" rel="noopener noreferrer">Kobo’s file format guide <svg class="icon"><use href="#i-external"/></svg></a></p>
+      </section>
+      <footer class="main-footer"><span>YOUR BOOKS. YOUR NETWORK. YOUR NEXT CHAPTER.</span><span><svg class="icon"><use href="#i-shield"/></svg>No cloud detours.</span></footer>
+    </main>
+  </div>
+  <div id="toast-region" class="toast-region" aria-live="polite" aria-atomic="true"></div>
+  <dialog id="delete-dialog"><form method="dialog"><div class="dialog-icon"><svg class="icon"><use href="#i-trash"/></svg></div><h2>Remove this book?</h2><p id="delete-description"></p><p class="muted">Your original file and any copy on your Kobo will stay untouched.</p><div class="dialog-actions"><button class="button secondary" value="cancel">Keep book</button><button class="button danger" id="confirm-delete" value="confirm">Remove book</button></div></form></dialog>
+</body>
+</html>

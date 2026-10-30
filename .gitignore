@@ -1,0 +1,13 @@
+/dist/
+/pageport-data/
+/.test-data/
+/.preview-data/
+/.qa/
+__pycache__/
+*.pyc
+*.test
+*.test.exe
+/coverage.out
+/.DS_Store
+/.idea/
+/.vscode/
