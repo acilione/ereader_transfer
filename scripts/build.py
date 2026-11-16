@@ -48,7 +48,7 @@ def source_tree() -> Iterator[Path]:
             source = ROOT / name
             if source.exists():
                 shutil.copy2(source, staged / name)
-        for name in ("web", "internal"):
+        for name in ("web", "internal", "cmd"):
             source = ROOT / name
             if source.is_dir():
                 shutil.copytree(source, staged / name)
@@ -117,6 +117,9 @@ def main() -> int:
                     shutil.copyfileobj(source, destination, length=1024 * 1024)
                 bundle.write(ROOT / "README.md", arcname="README.md")
                 bundle.write(ROOT / "LICENSE", arcname="LICENSE")
+                for name in ("Pageport-kobo-receiver.zip", "Pageport-Kobo-setup.md"):
+                    if (output / name).is_file():
+                        bundle.write(output / name, arcname=name)
             artifacts.extend((binary, archive))
             print(f"Created {archive}", flush=True)
 

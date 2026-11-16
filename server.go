@@ -67,6 +67,7 @@ type app struct {
 	failures       map[string]failureWindow
 	uploadLimit    int64
 	lockFile       *os.File
+	direct         directState
 }
 
 func randomHex(n int) (string, error) {
@@ -150,6 +151,9 @@ func newApp(dataDir string, assets fs.FS) (*app, error) {
 	}
 	if err = a.saveLocked(); err != nil {
 		return nil, err
+	}
+	if err = a.loadDirect(); err != nil {
+		return nil, fmt.Errorf("read receiver state: %w", err)
 	}
 	keepLock = true
 	return a, nil
@@ -287,6 +291,10 @@ func (a *app) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		a.serveAPI(w, r)
 		return
 	}
+	if strings.HasPrefix(r.URL.Path, "/receiver/") {
+		a.serveReceiver(w, r)
+		return
+	}
 	if r.Method != http.MethodGet && r.Method != http.MethodHead {
 		w.Header().Set("Allow", "GET, HEAD")
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -358,6 +366,14 @@ func jsonError(w http.ResponseWriter, status int, message string) {
 }
 
 func (a *app) serveAPI(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path == "/api/receiver-package" || r.URL.Path == "/api/receiver-guide" {
+		serveReceiverArtifact(w, r)
+		return
+	}
+	if r.URL.Path == "/api/direct" || r.URL.Path == "/api/devices" || strings.HasPrefix(r.URL.Path, "/api/devices/") || r.URL.Path == "/api/transfers" || strings.HasPrefix(r.URL.Path, "/api/transfers/") {
+		a.serveDirectAdmin(w, r)
+		return
+	}
 	switch {
 	case r.URL.Path == "/api/state" && r.Method == http.MethodGet:
 		a.mu.Lock()
@@ -565,6 +581,17 @@ func (a *app) deleteBook(w http.ResponseWriter, r *http.Request) {
 	}
 	a.mu.Lock()
 	defer a.mu.Unlock()
+	a.expireDirect()
+	for _, j := range a.direct.Jobs {
+		if j.Status == "queued" || j.Status == "awaiting_accept" || j.Status == "receiving" {
+			for _, f := range j.Files {
+				if f.ID == id {
+					jsonError(w, 409, "This book belongs to a pending transfer. Finish or cancel that transfer first.")
+					return
+				}
+			}
+		}
+	}
 	for i, b := range a.books {
 		if b.ID != id {
 			continue

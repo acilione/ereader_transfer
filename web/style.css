@@ -117,3 +117,23 @@
   .address-box .icon-button { margin-left: auto; }
   .code-row { flex-wrap: wrap; }
 }
+
+.direct-panel { margin-top:24px; padding:23px; }
+.direct-heading { display:flex; align-items:start; justify-content:space-between; gap:15px; }
+.direct-heading h2 { font:25px/1.3 var(--serif); }
+.direct-heading p, .direct-hint { font-size:12px; color:#67775a; margin-top:9px; }
+.receiver-badge { border:1px solid #d6decf; border-radius:5px; padding:5px 8px; font-size:10px; color:#67775a; white-space:nowrap; }
+.direct-controls, .pair-controls { display:flex; flex-wrap:wrap; align-items:center; gap:12px; margin-top:20px; }
+.direct-controls select { flex:1; min-width:180px; padding:11px; }
+.direct-controls .primary { margin-left:auto; }
+.receiver-setup { margin-top:20px; border-top:1px solid var(--line); padding-top:17px; }
+.receiver-setup summary { cursor:pointer; font-weight:550; font-size:13px; }
+.receiver-setup p, .receiver-setup li { font-size:12px; line-height:1.8; margin-top:12px; color:#67775a; }
+.receiver-setup a { text-decoration:underline; text-underline-offset:3px; }
+.pair-controls input { padding:11px; border:1px solid var(--line); border-radius:5px; font-size:12px; min-width:0; }
+.paired-device, .transfer-row { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:15px; padding:15px 0; border-bottom:1px solid var(--line); font-size:12px; }
+.paired-device .text-link { font-size:11px; }
+.transfer-row strong { font-size:12px; font-weight:550; }
+.transfer-row p { font-size:11px; color:#67775a; margin-top:5px; }
+.select-book { flex-shrink:0; width:17px; height:17px; accent-color:var(--green); cursor:pointer; }
+@media(max-width:650px) { .direct-heading {flex-direction:column;} .direct-controls .primary {margin-left:0;} .book-row-name {gap:6px;} .file-art {display:none;} .pair-controls input {width:100%;} .receiver-setup ol {padding-left:20px;} }

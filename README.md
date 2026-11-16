@@ -4,13 +4,18 @@ Send books to your Kobo over your home Wi-Fi, using a portable app and your Kobo
 
 Pageport opens a local website on your computer. Drop your books into the website, open the displayed address on your Kobo, and tap a book to download it. Your files stay on your computer and local network. There is no account, cloud service, USB cable, or extra Kobo software to install.
 
+**Optional direct sending:** select books in the portal, click **Send selected**, and tap **Accept** in a native Kobo dialog. This requires the experimental Pageport receiver plus NickelMenu and NickelDBus, installed once over USB. It targets the Kobo Aura on firmware 4.38.23852; actual hardware behavior still needs verification. Keep the receiver running, the Kobo awake, and Wi-Fi enabled. [Receiver setup and limitations](kobo/README.md). The original browser method above remains available without installing anything on the Kobo.
+
 ## Compatible e-readers
 
-Pageport is built for **Kobo** e-readers. It works with any Kobo that has the built-in web browser under **Beta Features**; nothing needs to be installed on the reader. Kobo lists the original Aura, Aura HD, Aura H2O and Aura Edition 2 among the models with it. The server and reader page are tested on a computer; check the transfer on your own model and firmware.
+Pageport is built for **Kobo** e-readers.
+
+| Method | Works with | Status |
+| --- | --- | --- |
+| **Browser download** (default, nothing installed on the reader) | Any Kobo with the built-in web browser under **Beta Features**. Kobo lists the original Aura, Aura HD, Aura H2O and Aura Edition 2 among the models with it. | Server and reader page tested on a computer; check on your own model and firmware. |
+| **Direct sending** (optional, experimental) | Kobo Aura on firmware 4.38.23852, with NickelMenu and NickelDBus 0.2.0. Firmware 5.x/6.x is not supported. | Not yet verified on physical hardware. |
 
 The reader page is plain HTML with no JavaScript, so other e-readers or phones with a basic web browser (for example, PocketBook or Kindle experimental browsers) may also be able to download books from it. This is untested and unsupported; whether the device imports the file depends on its browser and supported formats.
-
-An experimental direct-sending mode (tap **Accept** on the Kobo instead of using its browser) is being developed on the [`direct-sending`](../../tree/direct-sending) branch.
 
 ## Run the portable app
 
@@ -102,16 +107,18 @@ go test ./...
 To produce all six portable builds, install Python 3 and Go on the **build machine**, then run:
 
 ```sh
-python scripts/build.py --version 0.1.0
+python scripts/build.py --version 0.2.0
 ```
 
 To build only for Windows:
 
 ```sh
-python scripts/build.py --target windows-amd64 --version 0.1.0
+python scripts/build.py --target windows-amd64 --version 0.2.0
 ```
 
 The build script runs the Go tests, cross-compiles self-contained executables, creates ZIP bundles containing the app and this guide, and writes `dist/SHA256SUMS`. Repeat `--target` to select multiple platforms. Use `--skip-tests` only when the same source has already passed tests.
+
+To include the optional receiver in the desktop ZIPs, first follow [the receiver build instructions](kobo/README.md#build) on Linux/WSL using Go 1.23.12, then run the desktop build with current Go. The desktop packager includes `dist/Pageport-kobo-receiver.zip` and `dist/Pageport-Kobo-setup.md` when present. The portal serves these companions locally; no GitHub release or internet connection is needed to download them from the portal. Keep both files beside the executable after extraction.
 
 When building on Windows from a network path such as a WSL checkout, the script automatically stages the sources in a temporary local folder so Go's module locking works, then copies the artifacts to `dist/` and cleans up the temporary folder.
 
@@ -150,4 +157,4 @@ Screenshots are saved in `.qa/` by default; set `PAGEPORT_QA_DIR` to choose a di
 
 ## License
 
-Pageport is released under the [MIT License](LICENSE).
+Pageport is released under the [MIT License](LICENSE). NickelMenu and NickelDBus are separate projects under their own licenses and are not included.
