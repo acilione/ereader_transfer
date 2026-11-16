@@ -14,6 +14,10 @@
   let uploading = false;
   const uploadQueue = [];
   let uploadResults = [];
+  const selectedBooks = new Set();
+  let directState = { devices: [], jobs: [] };
+  let directSignature = '';
+  let sending = false;
   try { selectedIP = sessionStorage.getItem('pageport-ip') || ''; } catch (_) { /* Optional preference. */ }
 
   function element(tag, className, text) {
@@ -83,6 +87,7 @@
       online = true;
       $('#connection-error').hidden = true;
       renderState();
+      try { directState = await api('/api/direct'); renderDirect(); } catch (error) { $('#direct-status').textContent = error.message; }
     } catch (_) {
       online = false;
       $('#connection-error').hidden = false;
@@ -150,6 +155,7 @@
   function updateControls() {
     $$('.add-files, .sharing-toggle, #reset-code').forEach(button => { button.disabled = !online; });
     $$('.copy-address').forEach(button => { button.disabled = !online || !addressOrigin(); });
+    updateSendControls();
   }
 
   function bookCategory(file) {
@@ -163,6 +169,7 @@
 
   function renderBooks() {
     if (!state) return;
+    for (const id of selectedBooks) if (!state.files.some(file => file.id === id)) selectedBooks.delete(id);
     const query = $('#search').value.trim().toLocaleLowerCase();
     const sort = $('#sort').value;
     const signature = JSON.stringify([state.files, state.sharing, state.sessionCode, filter, query, sort]);
@@ -180,13 +187,17 @@
       const row = element('tr');
       const nameCell = element('td');
       const nameWrap = element('div', 'book-row-name');
+      const select = element('input', 'select-book');
+      select.type = 'checkbox'; select.dataset.id = file.id; select.checked = selectedBooks.has(file.id);
+      select.setAttribute('aria-label', 'Select ' + file.name);
+      select.addEventListener('change', () => { if (select.checked) selectedBooks.add(file.id); else selectedBooks.delete(file.id); updateSendControls(); });
       const art = element('span', 'file-art ' + category);
       art.append(icon(category === 'epub' ? 'book' : 'file'));
       const info = element('div', 'file-text');
       const name = element('div', 'book-name', file.name);
       name.title = file.name;
       info.append(name, element('div', 'book-date', 'Added ' + shortDate(file.addedAt)));
-      nameWrap.append(art, info);
+      nameWrap.append(select, art, info);
       nameCell.append(nameWrap);
       const formatCell = element('td');
       formatCell.append(element('span', 'format-badge ' + category, file.format));
@@ -222,7 +233,80 @@
       row.append(nameCell, formatCell, sizeCell, activityCell, actionCell);
       list.append(row);
     }
+    updateSendControls();
   }
+
+  function updateSendControls() {
+    const target = $('#target-device').value;
+    const busy = directState.jobs.some(job => job.deviceId === target && ['queued', 'awaiting_accept', 'receiving'].includes(job.status));
+    $('#send-books').textContent = sending ? 'Queueing…' : 'Send selected (' + selectedBooks.size + ')';
+    $('#send-books').disabled = !online || !state?.sharing || !target || !selectedBooks.size || selectedBooks.size > 20 || busy || sending;
+    $('#pair-device').disabled = !online;
+    if (selectedBooks.size > 20) $('#direct-status').textContent = 'Send up to 20 books in one batch. Clear some selections to continue.';
+  }
+
+  function renderDirect() {
+    const selector = $('#target-device');
+    const previous = selector.value;
+    const signature = JSON.stringify([directState, selectedIP]);
+    if (signature === directSignature) { updateSendControls(); return; }
+    directSignature = signature;
+    const receiverPackage = $('#receiver-package');
+    receiverPackage.textContent = directState.receiverPackageAvailable ? 'Download the receiver package' : 'Extract the complete desktop ZIP to make the receiver package available';
+    if (directState.receiverPackageAvailable) receiverPackage.href = '/api/receiver-package';
+    else receiverPackage.removeAttribute('href');
+    selector.replaceChildren();
+    if (!directState.devices.length) selector.append(new Option('Pair a Kobo first', ''));
+    for (const device of directState.devices) selector.append(new Option(device.name + (device.online ? ' · receiver online' : ' · receiver offline'), device.id));
+    if (directState.devices.some(device => device.id === previous)) selector.value = previous;
+    const list = $('#paired-devices'); list.replaceChildren();
+    for (const device of directState.devices) {
+      const row = element('div', 'paired-device');
+      row.append(element('span', '', device.name));
+      const config = element('a', 'text-link', 'Download configuration');
+      if (selectedIP) config.href = '/api/devices/' + device.id + '/config?ip=' + encodeURIComponent(selectedIP);
+      else config.textContent = 'Connect this computer to Wi-Fi first';
+      const remove = element('button', 'text-link', 'Unpair'); remove.type = 'button';
+      remove.addEventListener('click', async () => {
+        try { await api('/api/devices/' + device.id, {method:'DELETE'}); await refresh(); toast('Kobo unpaired. Its old configuration no longer works.'); }
+        catch (error) { toast(error.message, true); }
+      });
+      row.append(config, remove); list.append(row);
+    }
+    const jobs = $('#transfer-list'); jobs.replaceChildren();
+    const labels = {queued:'Queued', awaiting_accept:'Waiting for Accept on Kobo', receiving:'Receiving', received:'Received · library scan completed', saved:'Saved · library scan needs attention', rejected:'Rejected on Kobo', cancelled:'Cancelled', expired:'Expired', failed:'Transfer failed'};
+    for (const job of [...directState.jobs].reverse().slice(0,5)) {
+      const row = element('div', 'transfer-row');
+      const text = element('div');
+      const device = directState.devices.find(item => item.id === job.deviceId);
+      text.append(element('strong', '', (device?.name || 'Unpaired Kobo') + ' · ' + job.files.length + ' book(s) · ' + (labels[job.status] || job.status)), element('p', '', job.message));
+      row.append(text);
+      if (['queued','awaiting_accept'].includes(job.status)) {
+        const cancel = element('button', 'text-link', 'Cancel'); cancel.type = 'button';
+        cancel.addEventListener('click', async () => { try { await api('/api/transfers/' + job.id, {method:'DELETE'}); await refresh(); } catch (error) { toast(error.message,true); } });
+        row.append(cancel);
+      }
+      jobs.append(row);
+    }
+    $('#direct-status').textContent = selectedBooks.size > 20 ? 'Send up to 20 books in one batch.' : 'Keep the Kobo awake, on Wi-Fi, with its receiver running. Browser downloads remain available above.';
+    updateSendControls();
+  }
+
+  $('#target-device').addEventListener('change', updateSendControls);
+  $('#select-visible').addEventListener('click', () => { $$('.select-book').forEach(box => { box.checked = true; selectedBooks.add(box.dataset.id); }); updateSendControls(); });
+  $('#clear-selection').addEventListener('click', () => { selectedBooks.clear(); $$('.select-book').forEach(box => {box.checked=false;}); updateSendControls(); });
+  $('#pair-device').addEventListener('click', async event => {
+    event.currentTarget.disabled = true;
+    try { const device = await api('/api/devices', {method:'POST',body:JSON.stringify({name:$('#device-name').value})}); await refresh(); $('#target-device').value=device.id; updateSendControls(); toast('Pairing created. Download its configuration to your Kobo.'); }
+    catch (error) { toast(error.message,true); }
+    finally { updateControls(); }
+  });
+  $('#send-books').addEventListener('click', async () => {
+    sending=true; updateSendControls();
+    try { await api('/api/transfers', {method:'POST',body:JSON.stringify({deviceId:$('#target-device').value,fileIds:[...selectedBooks]})}); selectedBooks.clear(); $$('.select-book').forEach(box => {box.checked=false;}); await refresh(); toast('Transfer queued. Tap Accept when it appears on your Kobo.'); }
+    catch(error) {toast(error.message,true);}
+    finally {sending=false;updateControls();}
+  });
 
   function setView() {
     const requested = location.hash.slice(1);
@@ -399,7 +483,7 @@
   $('#network-select').addEventListener('change', event => {
     selectedIP = event.target.value;
     try { sessionStorage.setItem('pageport-ip', selectedIP); } catch (_) { /* Optional preference. */ }
-    renderState(); updateControls();
+    renderState(); renderDirect(); updateControls();
   });
   $$('.sharing-toggle').forEach(button => button.addEventListener('click', () => {
     if (!state) return;

@@ -1,6 +1,8 @@
 /dist/
 /pageport-data/
 /repaired-books/
+/config.json
+/kobo/config.json
 /.test-data/
 /.preview-data/
 /.qa/
