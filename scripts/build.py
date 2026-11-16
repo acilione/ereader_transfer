@@ -116,6 +116,7 @@ def main() -> int:
                 with binary.open("rb") as source, bundle.open(binary_info, "w") as destination:
                     shutil.copyfileobj(source, destination, length=1024 * 1024)
                 bundle.write(ROOT / "README.md", arcname="README.md")
+                bundle.write(ROOT / "LICENSE", arcname="LICENSE")
             artifacts.extend((binary, archive))
             print(f"Created {archive}", flush=True)
 

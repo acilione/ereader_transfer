@@ -4,9 +4,17 @@ Send books to your Kobo over your home Wi-Fi, using a portable app and your Kobo
 
 Pageport opens a local website on your computer. Drop your books into the website, open the displayed address on your Kobo, and tap a book to download it. Your files stay on your computer and local network. There is no account, cloud service, USB cable, or extra Kobo software to install.
 
+## Compatible e-readers
+
+Pageport is built for **Kobo** e-readers. It works with any Kobo that has the built-in web browser under **Beta Features**; nothing needs to be installed on the reader. Kobo lists the original Aura, Aura HD, Aura H2O and Aura Edition 2 among the models with it. The server and reader page are tested on a computer; check the transfer on your own model and firmware.
+
+The reader page is plain HTML with no JavaScript, so other e-readers or phones with a basic web browser (for example, PocketBook or Kindle experimental browsers) may also be able to download books from it. This is untested and unsupported; whether the device imports the file depends on its browser and supported formats.
+
+An experimental direct-sending mode (tap **Accept** on the Kobo instead of using its browser) is being developed on the [`direct-sending`](../../tree/direct-sending) branch.
+
 ## Run the portable app
 
-Choose the build for your computer from `dist/`:
+Download the archive for your computer from the repository's **Releases** page when available, or build it yourself (see [Develop and build](#develop-and-build)); builds are written to `dist/`:
 
 | Computer | Archive |
 | --- | --- |
@@ -139,3 +147,7 @@ node tests/browser.cjs
 The script checks desktop and mobile layouts, uploads, filters, sharing controls, deletion, and reader downloads with JavaScript disabled. It uploads synthetic transport fixtures, removes a test file, pauses sharing, and rotates the session code in the app instance selected by `PAGEPORT_URL`. **Do not point it at your personal library.** The files are not valid ebooks for Kobo import, and the test leaves some fixtures behind. Stop the test instance afterward and use a fresh empty data directory for a repeat run.
 
 Screenshots are saved in `.qa/` by default; set `PAGEPORT_QA_DIR` to choose a different output folder. These browser checks do not replace a transfer test on a physical Kobo.
+
+## License
+
+Pageport is released under the [MIT License](LICENSE).
